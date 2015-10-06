@@ -72,21 +72,16 @@ int main(int argc, char**argv)
 	TEST("[S1-----readBinary function test completed,please check result------\n\n\n\n");
 
 	TEST("[S2-----now start test writeBinary function------");
-	fstream io(binarydatapath, ios_base::in|ios_base::out);
-	io << (readBinary(testfilepath).c_str());
-	string BINDATA = "";
-	io >> BINDATA;
-	writeBinary(targetfilepath, BINDATA);
+	writeBinary(targetfilepath, readBinary(testfilepath));
 	TEST("[S2-----writeBinary function test completed,please check result------");
 	TEST("[S3-----we will use readBinary function to read out the bits of targetfile------");
 	TEST("[S3-call readBinary");
 	TEST("[S3--result:");
-	cout << readBinary(targetfilepath) << endl;\
+	cout << readBinary(targetfilepath) << endl;
 	TEST("[S3-----plesae check the output,to see if writeBinary function works properly------");
 	TEST("[\n\n\n\nS4-----BinaryStringRW algorithm all test completed------\n\n\n");
 	
 
-	io.close();
 	delete[] bitdta;
 	return 0;
 }
