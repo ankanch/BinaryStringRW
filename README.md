@@ -8,4 +8,6 @@ http://akakanch.com
 kanch@akakanch.com
 ---------------------------------------
 any way,hope this algorithm can help you.
-
+I mean,when you read a file's binary out,you know,you can analyize it,then,you know what can you do with it.
+but there are still some problems,like portable,or the effectiveness.
+so I hope you guys can help me to fix it,make it much better. :)
