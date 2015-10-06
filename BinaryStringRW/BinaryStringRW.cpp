@@ -72,10 +72,21 @@ int main(int argc, char**argv)
 	TEST("[S1-----readBinary function test completed,please check result------\n\n\n\n");
 
 	TEST("[S2-----now start test writeBinary function------");
-
+	fstream io(binarydatapath, ios_base::in|ios_base::out);
+	io << (readBinary(testfilepath).c_str());
+	string BINDATA = "";
+	io >> BINDATA;
+	writeBinary(targetfilepath, BINDATA);
 	TEST("[S2-----writeBinary function test completed,please check result------");
+	TEST("[S3-----we will use readBinary function to read out the bits of targetfile------");
+	TEST("[S3-call readBinary");
+	TEST("[S3--result:");
+	cout << readBinary(targetfilepath) << endl;\
+	TEST("[S3-----plesae check the output,to see if writeBinary function works properly------");
+	TEST("[\n\n\n\nS4-----BinaryStringRW algorithm all test completed------\n\n\n");
 	
 
+	io.close();
 	delete[] bitdta;
 	return 0;
 }
@@ -213,17 +224,28 @@ const string writeBinary(const string filepath,const string & binData)
 				{
 					if (sbuf[m] == '1')   //now set the bit of short
 					{
-
-						continue;
+						buf = (buf | bitdta[m]);
 					}
 
 				}
+				write.write((char*)&buf, sizeof(short));
+				buf = 0;        //set all bits to 0
 				sbuf = "";
 
 			}
 			else     //this is used to write the last varible,I don't know use which type,so we need to determine by length
 			{
 				sbuf = a.substr(sbitlen*i, a.length() - sbitlen*i); //the last bits of data
+				//if there really have some bits left,it should be 8 bits,so,we use char to write the last bits
+				char lastbits = 0;
+				for (int m = 0; m < sbuf.length(); m++)
+				{
+					if (sbuf[m] == '1')
+					{
+						lastbits = (lastbits | bitdta[m]);
+					}
+				}
+				write.write((char*)&lastbits, sizeof(char));
 
 			}
 		}
@@ -232,13 +254,21 @@ const string writeBinary(const string filepath,const string & binData)
 	{
 		for (int i = 0; i < looprounds; i++)   //code copied from #9
 		{
+			sbuf = a.substr(sbitlen*i, sbitlen);  //read sizeof(short) 's char 0 or 1
+			for (int m = 0; m < sbitlen; m++)
+			{
+				if (sbuf[m] == '1')   //now set the bit of short
+				{
+					buf = (buf | bitdta[m]);
+				}
 
+			}
+			write.write((char*)&buf, sizeof(short));
+			buf = 0;        //set all bits to 0
+			sbuf = "";
 		}
 	}
 	
-
-	write.write((char*)&buf, sizeof(short));
-
 	write.close();
 	return a;
 }
