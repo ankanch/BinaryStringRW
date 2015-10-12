@@ -60,6 +60,11 @@ const char* testfilepath = "C:\\binalgtest\\rawfile.txt";      //the raw file pa
 const char* binarydatapath = "C:\\binalgtest\\binstring.txt";    //binary string path
 const char* targetfilepath = "C:\\binalgtest\\reductionfile.txt";    //reduction file via a known binary string(above 1)
 
+/*///pics
+const char* testfilepath = "C:\\binalgtest\\pictest\\rawfile.jpg";      //the raw file path
+const char* binarydatapath = "C:\\binalgtest\\pictest\\binstring.txt";    //binary string path
+const char* targetfilepath = "C:\\binalgtest\\pictest\\reductionfile.jpg";    //reduction file via a known binary string(above 1)
+/*/
 int main(int argc, char**argv)
 {
 	BinaryStringRW sw;
@@ -75,6 +80,8 @@ int main(int argc, char**argv)
 
 	TEST("[S1-----now start test readBinary function(no reverse)-------");	
 	cout << "readBinary()= " << sw.readBinary(testfilepath) << endl;
+	cout << "readBinaryS()= " << sw.readBinaryS(testfilepath) << endl;
+	
 	TEST("[S1-----readBinary function test completed,please check result------\n\n\n\n");
 
 	TEST("[S2-----now start test writeBinary function------");

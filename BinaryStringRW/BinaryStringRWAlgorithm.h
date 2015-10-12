@@ -25,7 +25,7 @@ class BinaryStringRW
 	public:
 		//essential function definations
 		const string readBinary(const string filepath);                              //该函数实现将二进制以字符串的形式读出
-
+		const string readBinaryS(const string filepath);							//功能同上，但是这个效率更高
 		const string writeBinary(const string filepath, const string & binData);      //该函数实现将字符串形式二进制写入文件
 
 		void determinBitData(const int sbitlen);                                    //该函数用来决定位数组大小

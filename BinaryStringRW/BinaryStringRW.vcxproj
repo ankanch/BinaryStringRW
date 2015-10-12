@@ -151,6 +151,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryStringRWAlgorithm.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BinaryStringRW.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
