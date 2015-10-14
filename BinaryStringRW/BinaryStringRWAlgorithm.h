@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <malloc.h>  //for _msize() function
+#include <stdio.h>
 using namespace std;
 
 
@@ -62,4 +63,5 @@ class BinaryStringRW
 	int slen = sizeof(short);   //slen is the len of type short
 	int sbitlen = slen * 8;     //sbitlen is the bits's sum of short io specfic systems.
 	short * bitdta;   //used to save specfic length of short's  bit data
+
 };

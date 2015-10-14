@@ -55,7 +55,7 @@ int sbitlen = slen * 8;     //sbitlen is the bits's sum of short io specfic syst
 short * bitdta;   //used to save specfic length of short's  bit data
 
 
-//some essential test varibles
+/*/some essential test varibles
 const char* testfilepath = "C:\\binalgtest\\rawfile.txt";      //the raw file path
 const char* binarydatapath = "C:\\binalgtest\\binstring.txt";    //binary string path
 const char* targetfilepath = "C:\\binalgtest\\reductionfile.txt";    //reduction file via a known binary string(above 1)
@@ -64,7 +64,7 @@ const char* targetfilepath = "C:\\binalgtest\\reductionfile.txt";    //reduction
 const char* testfilepath = "C:\\binalgtest\\pictest\\rawfile.jpg";      //the raw file path
 const char* binarydatapath = "C:\\binalgtest\\pictest\\binstring.txt";    //binary string path
 const char* targetfilepath = "C:\\binalgtest\\pictest\\reductionfile.jpg";    //reduction file via a known binary string(above 1)
-/*/
+///*/
 int main(int argc, char**argv)
 {
 	BinaryStringRW sw;
@@ -79,18 +79,25 @@ int main(int argc, char**argv)
 	cout << "data of bitdta[]:" << endl;
 
 	TEST("[S1-----now start test readBinary function(no reverse)-------");	
-	cout << "readBinary()= " << sw.readBinary(testfilepath) << endl;
-	cout << "readBinaryS()= " << sw.readBinaryS(testfilepath) << endl;
+	//cout << "readBinary()= " << sw.readBinary(testfilepath) << endl;
+	//cout << "readBinaryS()= " << sw.readBinaryS(testfilepath) << endl;
+	
 	
 	TEST("[S1-----readBinary function test completed,please check result------\n\n\n\n");
 
 	TEST("[S2-----now start test writeBinary function------");
+	//ofstream a("C:\\binalgtest\\binaryR.txt");
+	//ofstream b("C:\\binalgtest\\binaryRS.txt");
+	//a << sw.readBinary(testfilepath);
+	//b << sw.readBinaryS(testfilepath);
+	//a.close(); b.close();
+	//sw.writeBinary(targetfilepath, sw.readBinaryS(testfilepath));
 	sw.writeBinary(targetfilepath, sw.readBinary(testfilepath));
 	TEST("[S2-----writeBinary function test completed,please check result------");
 	TEST("[S3-----we will use readBinary function to read out the bits of targetfile------");
-	TEST("[S3-call readBinary");
+	("[S3-call readBinary");
 	TEST("[S3--result:");
-	cout << sw.readBinary(targetfilepath) << endl;
+	//cout << sw.readBinary(targetfilepath) << endl;
 	TEST("[S3-----plesae check the output,to see if writeBinary function works properly------");
 	TEST("[\n\n\n\nS4-----BinaryStringRW algorithm all test completed------\n\n\n");
 	

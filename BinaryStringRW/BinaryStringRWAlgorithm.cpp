@@ -185,46 +185,6 @@ const string BinaryStringRW::writeBinary(const string filepath, const string & b
 
 const string BinaryStringRW::readBinaryS(const string filepath)
 {
-	ifstream read(filepath,ios_base::in);  //open specfic file,then move pointer to the end of file to get file length
-	string rawdata = "", CLbuf = ""; ///used to save the data of file as string
-	while (!read.eof())
-	{
-		read >> CLbuf;   //for efficient,I have to read file data all out to a varible as string,cuz readBinary() is waste of time on disk IO
-		rawdata += CLbuf;
-	}
-	string binData = "", binBuf = "";
-	int loopperchar = sizeof(rawdata[0])*8;    //determine how much loops need to read out all the bits;
-	for (int i = 0; i < rawdata.length(); i++)   //now starting read bits
-	{
-		//start reading,
-		//pocess below doesn't reverse the bits read;if we reverse it,changes should also be make in writeBinary function
-				for (int m = 0; m < loopperchar; m++)
-				{
-					if ((rawdata[i] & bitdta[m]) == bitdta[m])
-					{
-						binBuf += "1";
-					}
-					else
-					{
-						binBuf += "0";
-					}
-				}
-		binData += binBuf;
-		binBuf = "";
-	}
-	//I'm thinking wether should I reverse the bits read to a acceptable format,at least,for we huamn
-	//what's a acceptable format?look here:https://docs.google.com/drawings/d/1odXlKXx6MggQvDeObna4wYsEd_kVF23HoaM_Si7z32M/edit?usp=sharing
-	//if necessary to reverse,add code here(above)
-	
-	///*/
-
-	//TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  START
-	//test code ,to test this if this function works properly
-	cout << "after read from file,string rawdata  = " << rawdata << endl;
-	//TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  END
-
-
-
-	read.close();
+	string binData = "";
 	return binData;
 }
