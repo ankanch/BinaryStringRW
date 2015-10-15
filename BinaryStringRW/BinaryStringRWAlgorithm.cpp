@@ -183,8 +183,85 @@ const string BinaryStringRW::writeBinary(const string filepath, const string & b
 }
 
 
+//second way to read out binary data
 const string BinaryStringRW::readBinaryS(const string filepath)
 {
-	string binData = "";
+	string binData = "", binBuf = "";
+	ifstream in(filepath, ios_base::in | ios_base::ate | ios_base::binary);
+	int bytelen = in.tellg();     //get the byte size of the file
+	in.close();
+	FILE* stream;
+	const int MAX_BUFFER = 12000;   //a 12000bytes(11.7 kb) buffer
+	char buf[MAX_BUFFER] = "";
+	int len=0,roundsread=0,bytesleft=-1,bufi=0;            //roundsread used to store how many times need to read,bytesleft record how many bytes left in last rounds' reading
+	//varible avove bufi is used to save if is the last buf[]
+	//determine how many buffers need
+	if (bytelen % MAX_BUFFER == 0) // bytelen = k * MAX_BUFFER ,so we just need k times reading
+	{
+		roundsread = bytelen / MAX_BUFFER;
+	}
+	else if (bytelen % MAX_BUFFER !=0)  //so we need k+1 times reading
+	{
+		//if it is the last buffer to read && size doesn't equ to MAX_BUFFER
+		roundsread = bytelen / MAX_BUFFER + 1;
+		bytesleft = bytelen % MAX_BUFFER;
+	}
+	for (int i = 0; i < roundsread; i++)  //this loop keep reading from file
+	{
+		//start reading
+		if ((stream = fopen(filepath.c_str(), "rb")) == NULL)
+		{
+			fprintf(stderr, "Cannot open input file.\n");
+			return 0;
+		}
+		len = fread(buf, 1, MAX_BUFFER, stream);
+		//fseek(stream, MAX_BUFFER, i*MAX_BUFFER);
+		cout << "len= " << len << "-bytelen= " << bytelen << "-bytesleft=" << bytesleft << endl;
+		//start pocessing
+		if (i != roundsread-1 )    ///we have to know if it is the last Buffer to read
+		{
+			for (int t = 0; t < MAX_BUFFER; t++)    //pocessing k buffer
+			{
+				for (int r = 0; r < sizeof(char); r++)
+				{
+					if (buf[t] & CV[r] == CV[r])
+					{
+						binBuf += "1";
+						continue;
+					}
+					binBuf += "0";
+				}
+				binData += binBuf;
+				binBuf = "";
+			}
+		}
+		else if (i == roundsread - 1)
+		{
+			for (int t = 0; t < bytesleft; t++)   //pocessing the last buffer
+			{
+				for (int r = 0; r < sizeof(char); r++)
+				{
+					if (buf[t] & CV[r] == CV[r])
+					{
+						binBuf += "1";
+						continue;
+					}
+					binBuf += "0";
+				}
+				binData += binBuf;
+				binBuf = "";
+			}
+		}
+	}
+
+	fclose(stream);
 	return binData;
+}
+
+//second way to write binary data for readBinaryS function
+const string BinaryStringRW::writeBinaryS(const string filepath, const string & binData)
+{
+	string a = binData, sbuf = "";
+
+	return a;
 }

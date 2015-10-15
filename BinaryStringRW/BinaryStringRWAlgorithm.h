@@ -28,6 +28,7 @@ class BinaryStringRW
 		const string readBinary(const string filepath);                              //该函数实现将二进制以字符串的形式读出
 		const string readBinaryS(const string filepath);							//功能同上，但是这个效率更高
 		const string writeBinary(const string filepath, const string & binData);      //该函数实现将字符串形式二进制写入文件
+		const string writeBinaryS(const string filepath,const string & binData);	//功能同上，但是这个效率更高
 
 		void determinBitData(const int sbitlen);                                    //该函数用来决定位数组大小
 
@@ -59,6 +60,7 @@ class BinaryStringRW
 			short(0x100),short(0x200),short(0x400),short(0x800),
 			short(0x1000),short(0x2000),short(0x4000),short(0x8000)
 		};
+	char CV[8] = { char(0x1),char(0x2),char(0x4),char(0x8),char(0x10),char(0x20),char(0x40),char(0x80) };
 	//for this algorithm can run successfully on another systems,we have to know the length of type short in specfic systems.
 	int slen = sizeof(short);   //slen is the len of type short
 	int sbitlen = slen * 8;     //sbitlen is the bits's sum of short io specfic systems.
