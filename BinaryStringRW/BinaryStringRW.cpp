@@ -3,6 +3,7 @@
 #include <string>
 #include <malloc.h>  //for _msize() function
 #include "BinaryStringRWAlgorithm.h"
+#include <ctime>
 
 /*
 @zh-CN
@@ -87,14 +88,22 @@ int main(int argc, char**argv)
 
 	TEST("[S2-----now start test writeBinary function------");
 	//ofstream a("C:\\binalgtest\\binaryR.txt");
-	ofstream b("C:\\binalgtest\\binaryRS.txt");
+	//ofstream b("C:\\binalgtest\\binaryRS.txt");
 	//a << sw.readBinary(testfilepath);
 	//b << sw.readBinaryS(testfilepath);
 	//a.close(); b.close();
-	string a = sw.readBinaryS(testfilepath);
-	cout << a << endl;
+	//string a = sw.readBinaryS(testfilepath);
+	//cout << a << endl;
 	//sw.writeBinary(targetfilepath, sw.readBinaryS(testfilepath));
 	//sw.writeBinary(targetfilepath, sw.readBinary(testfilepath));
+	cout << endl << endl << endl << endl <<"now start test readBinary's time and readBinaryS' time" <<endl;
+	int time_s = clock();
+	sw.readBinary(testfilepath);
+	int time_a = clock() - time_s;
+	sw.readBinaryS(testfilepath);
+	int time_b = clock() - (time_a + time_s);
+	cout << "readBinary's time= " << time_a << endl << "readBinaryS' time=" << time_b << endl<<endl;
+	/*/
 	TEST("[S2-----writeBinary function test completed,please check result------");
 	TEST("[S3-----we will use readBinary function to read out the bits of targetfile------");
 	("[S3-call readBinary");
@@ -102,7 +111,7 @@ int main(int argc, char**argv)
 	//cout << sw.readBinary(targetfilepath) << endl;
 	TEST("[S3-----plesae check the output,to see if writeBinary function works properly------");
 	TEST("[\n\n\n\nS4-----BinaryStringRW algorithm all test completed------\n\n\n");
-	
+	/*/
 
 	delete[] bitdta;
 	return 0;

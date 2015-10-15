@@ -17,7 +17,7 @@ void BinaryStringRW::determinBitData(const int s)
 	}
 }
 
-//more efficientive version
+
 const string BinaryStringRW::readBinary(const string filepath)
 {
 	ifstream read(filepath, ios_base::binary | ios_base::in | ios_base::ate);  //open specfic file,then move pointer to the end of file
@@ -81,20 +81,6 @@ const string BinaryStringRW::readBinary(const string filepath)
 		binBuf = "";
 	}
 	///*/
-
-	//TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  START
-	//test code ,to test this if this function works properly
-	cout << "file length(from tellg())= " << fileylen << " bytes" << endl;
-	cout << "file length(from tellg())= " << fileblen << " bits" << endl;
-	read.seekg(0, ios_base::beg);
-	read.read((char*)&buf, sizeof(short));
-	read.read((char*)&bbuf, sizeof(short));
-	cout << "after read from file,short buf = " << buf << endl << "bbuf = " << bbuf << endl;
-	cout << "looprounds= " << looprounds << endl;
-	cout << "lastshortbitscover= " << lastshortbitscover << endl;
-	//TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST  END
-
-
 
 	read.close();
 	return binData;
@@ -183,7 +169,7 @@ const string BinaryStringRW::writeBinary(const string filepath, const string & b
 }
 
 
-//second way to read out binary data
+////more efficientive version,lower memory&time cost
 const string BinaryStringRW::readBinaryS(const string filepath)
 {
 	string binData = "", binBuf = "";
@@ -216,7 +202,7 @@ const string BinaryStringRW::readBinaryS(const string filepath)
 		}
 		len = fread(buf, 1, MAX_BUFFER, stream);
 		//fseek(stream, MAX_BUFFER, i*MAX_BUFFER);
-		cout << "len= " << len << "-bytelen= " << bytelen << "-bytesleft=" << bytesleft << endl;
+		//cout << "len= " << len << "-bytelen= " << bytelen << "-bytesleft=" << bytesleft << endl;
 		//start pocessing
 		if (i != roundsread-1 )    ///we have to know if it is the last Buffer to read
 		{
