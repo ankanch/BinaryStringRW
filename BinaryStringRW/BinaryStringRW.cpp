@@ -95,6 +95,7 @@ int main(int argc, char**argv)
 	//string a = sw.readBinaryS(testfilepath);
 	//cout << a << endl;
 	//sw.writeBinary(targetfilepath, sw.readBinaryS(testfilepath));
+	sw.writeBinaryS(targetfilepath, sw.readBinaryS(testfilepath));
 	//sw.writeBinary(targetfilepath, sw.readBinary(testfilepath));
 	cout << endl << endl << endl << endl <<"now start test readBinary's time and readBinaryS' time" <<endl;
 	int time_s = clock();
