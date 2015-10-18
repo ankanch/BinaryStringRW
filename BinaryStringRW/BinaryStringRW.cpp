@@ -56,7 +56,7 @@ int sbitlen = slen * 8;     //sbitlen is the bits's sum of short io specfic syst
 short * bitdta;   //used to save specfic length of short's  bit data
 
 
-/*/some essential test varibles
+//some essential test varibles
 const char* testfilepath = "C:\\binalgtest\\rawfile.txt";      //the raw file path
 const char* binarydatapath = "C:\\binalgtest\\binstring.txt";    //binary string path
 const char* targetfilepath = "C:\\binalgtest\\reductionfile.txt";    //reduction file via a known binary string(above 1)
@@ -65,7 +65,7 @@ const char* targetfilepath = "C:\\binalgtest\\reductionfile.txt";    //reduction
 const char* testfilepath = "C:\\binalgtest\\pictest\\rawfile.jpg";      //the raw file path
 const char* binarydatapath = "C:\\binalgtest\\pictest\\binstring.txt";    //binary string path
 const char* targetfilepath = "C:\\binalgtest\\pictest\\reductionfile.jpg";    //reduction file via a known binary string(above 1)
-///*/
+/*/
 int main(int argc, char**argv)
 {
 	BinaryStringRW sw;
@@ -97,13 +97,13 @@ int main(int argc, char**argv)
 	//sw.writeBinary(targetfilepath, sw.readBinaryS(testfilepath));
 	sw.writeBinaryS(targetfilepath, sw.readBinaryS(testfilepath));
 	//sw.writeBinary(targetfilepath, sw.readBinary(testfilepath));
-	cout << endl << endl << endl << endl <<"now start test readBinary's time and readBinaryS' time" <<endl;
-	int time_s = clock();
-	sw.readBinary(testfilepath);
-	int time_a = clock() - time_s;
-	sw.readBinaryS(testfilepath);
-	int time_b = clock() - (time_a + time_s);
-	cout << "readBinary's time= " << time_a << endl << "readBinaryS' time=" << time_b << endl<<endl;
+	//cout << endl << endl << endl << endl <<"now start test readBinary's time and readBinaryS' time" <<endl;
+	//int time_s = clock();
+	//sw.readBinary(testfilepath);
+	//int time_a = clock() - time_s;
+	//sw.readBinaryS(testfilepath);
+	//int time_b = clock() - (time_a + time_s);
+	//cout << "readBinary's time= " << time_a << endl << "readBinaryS' time=" << time_b << endl<<endl;
 	/*/
 	TEST("[S2-----writeBinary function test completed,please check result------");
 	TEST("[S3-----we will use readBinary function to read out the bits of targetfile------");

@@ -261,6 +261,7 @@ const string BinaryStringRW::writeBinaryS(const string filepath, const string & 
 		return 0;
 	}
 
+	//probles codes here
 	if (binData.length() % MAX_BUFFER == 0) // bytelen = k * MAX_BUFFER ,so we just need k times reading
 	{
 		roundswrite = binData.length() / MAX_BUFFER;
@@ -271,46 +272,7 @@ const string BinaryStringRW::writeBinaryS(const string filepath, const string & 
 		roundswrite = binData.length() / MAX_BUFFER + 1;
 		bytesleft = binData.length() % MAX_BUFFER;
 	}
-	for (int i = 0; i < roundswrite; i++)  //this loop keep reading from file
-	{
-		//start pocessing
-		if (i != roundswrite - 1)    ///we have to know if it is the last Buffer to read
-		{
-			for (int t = 0; t < MAX_BUFFER; t++)    //pocessing k buffer
-			{
-				for (int r = 0; r < sizeof(char); r++)
-				{
-					if (binData[i*MAX_BUFFER + t] == '1')
-					{
-						x = x | CV[r];
-						continue;
-					}
-				}
-				buf[t] = x;
-				x = 0;
-			}
-			//write data to file;
-			fwrite(buf, 1, MAX_BUFFER, stream);
-		}
-		else if (i == roundswrite - 1)
-		{
-			for (int t = 0; t < bytesleft; t++)   //pocessing the last buffer
-			{
-				for (int r = 0; r < sizeof(char); r++)
-				{
-					if (binData[i*MAX_BUFFER + t] == '1')
-					{
-						x = x | CV[r];
-						continue;
-					}
-				}
-				buf[t] = x;
-				x = 0;
-			}
-			//write data to file;
-			fwrite(buf, 1, bytesleft, stream);
-		}
-	}
+	
 
 	fclose(stream);
 
