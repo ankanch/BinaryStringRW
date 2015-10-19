@@ -87,15 +87,15 @@ int main(int argc, char**argv)
 	TEST("[S1-----readBinary function test completed,please check result------\n\n\n\n");
 
 	TEST("[S2-----now start test writeBinary function------");
-	//ofstream a("C:\\binalgtest\\binaryR.txt");
-	//ofstream b("C:\\binalgtest\\binaryRS.txt");
-	//a << sw.readBinary(testfilepath);
-	//b << sw.readBinaryS(testfilepath);
-	//a.close(); b.close();
+	ofstream a("C:\\binalgtest\\binaryR.txt");
+	ofstream b("C:\\binalgtest\\binaryRS.txt");
+	a << sw.readBinary(testfilepath);
+	b << sw.readBinaryS(testfilepath);
+	a.close(); b.close();
 	//string a = sw.readBinaryS(testfilepath);
 	//cout << a << endl;
 	//sw.writeBinary(targetfilepath, sw.readBinaryS(testfilepath));
-	sw.writeBinaryS(targetfilepath, sw.readBinaryS(testfilepath));
+	//sw.writeBinaryS(targetfilepath, sw.readBinaryS(testfilepath));
 	//sw.writeBinary(targetfilepath, sw.readBinary(testfilepath));
 	//cout << endl << endl << endl << endl <<"now start test readBinary's time and readBinaryS' time" <<endl;
 	//int time_s = clock();

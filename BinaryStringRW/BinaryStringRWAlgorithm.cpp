@@ -170,6 +170,7 @@ const string BinaryStringRW::writeBinary(const string filepath, const string & b
 
 
 ////more efficientive version,lower memory&time cost
+/*/
 const string BinaryStringRW::readBinaryS(const string filepath)
 {
 	string binData = "", binBuf = "";
@@ -243,6 +244,7 @@ const string BinaryStringRW::readBinaryS(const string filepath)
 	fclose(stream);
 	return binData;
 }
+//
 
 //second way to write binary data for readBinaryS function
 const string BinaryStringRW::writeBinaryS(const string filepath, const string & binData)
@@ -274,7 +276,10 @@ const string BinaryStringRW::writeBinaryS(const string filepath, const string & 
 	}
 	
 
+
+
 	fclose(stream);
 
 	return a;
 }
+/*/
