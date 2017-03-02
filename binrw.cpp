@@ -83,7 +83,9 @@ const string readBinary(const string filepath ,const int lr,const int rr)
     //当设置为读取全部数据的时候
     if(lr == rr && lr == 0){
         while( !read.eof() ){
+            read>>noskipws;
             read>>bicc;
+            //cout<<bicc<<"\t";
             binData += char2bin(bicc);
         }
     }else{
