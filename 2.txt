@@ -1,0 +1,1 @@
+Thisisatestfilecontains4lines.ThisfilesisusedtodemonstratethatBinRWalgorithmdomakesense.Ingeneral,filereductedshouldlooksameasthisone.PoweredbyKanchh

@@ -14,13 +14,26 @@ int main(int argc,char**argv)
         cout<<STRING_USAGE<<endl;
     }else if( argc == 4){
         //选中为读取整个文件的二进制代码
-        if( strcmp(argv[3],MODE_ALL) != 0 ){
+        if( strcmp(argv[3],MODE_ALL) == 0 ){
+            //开始处理
+            string result = readBinary(argv[1]);
+            if(strcmp(argv[2],"-") == 0){
+                cout<<"---\nresult:\n"<<result<<endl;
+            }else{
+                ofstream write(argv[2],ios_base::out);
+                write<<result;
+                write.close();
+            }
+        }else if( strcmp(argv[3],MODE_REDUCT) == 0 ){
+            ifstream read(argv[1],ios_base::in);
+            string bindata;
+            read>>bindata;
+            read.close();
+            writeBinary(argv[2],bindata);
+        }else{
             cout<<STRING_INVAILD<<endl;
             return -1;
         }
-        //开始处理
-        string result = readBinary(argv[1]);
-        cout<<"---\nresult:\n"<<result<<endl;
 
     }else if( argc == 6 or argc == 5){
         //选中为读取指定区间二进制代码，如果为5个参数，则默认为从 0 到 r-range
@@ -29,15 +42,21 @@ int main(int argc,char**argv)
             cout<<STRING_INVAILD<<endl;
             return -1;
         }
+        string result = "";
         //开始处理
         if(argc == 5){
             //5个参数，从 0 到 r-range
-            string result = readBinary(argv[1],0,atoi(argv[4]));
-            cout<<"---\nresult:\n"<<result<<endl;
+            result = readBinary(argv[1],0,atoi(argv[4]));
         }else if(argc == 6){
             //6个参数，从 l-range 到 r-range
-            string result = readBinary(argv[1],atoi(argv[4]),atoi(argv[5]));
+            result = readBinary(argv[1],atoi(argv[4]),atoi(argv[5]));
+        }
+        if(strcmp(argv[2],"-") == 0){
             cout<<"---\nresult:\n"<<result<<endl;
+        }else{
+            ofstream write(argv[2],ios_base::out);
+            write<<result;
+            write.close();
         }
 
     }else{
@@ -109,9 +128,37 @@ const string readBinary(const string filepath ,const int lr,const int rr)
     read.close();
     return binData;
 }
-const string writeBinary(const string filepath,const string & binData)
+const int writeBinary(const string filepath,const string & binData)
 {
-    return "";
+    ofstream write(filepath, ios_base::binary | ios_base::out);
+    if( !write ){
+         cout<<STRING_ERROR_OPEN<<endl;
+         return -1;
+    }
+    int loops = binData.length()/8;
+    int loopsleft = binData.length()%8;
+    unsigned char bicc;
+    for(int i=0;i<loops;i++){
+        bicc = 0x0;
+        for(int x=0;x<8;x++){
+            if(binData[i*8+x] == '1'){
+                bicc |= CMPARY[x];
+            }
+        }
+        cout<<bicc<<"\t";
+        write<<bicc;
+    } 
+    bicc = 0;
+    for(int i=0;i<loopsleft;i++){
+        if(binData[loops*8+i] == '1'){
+            bicc |= CMPARY[i];
+        }
+    }
+    if(loopsleft > 0){
+        write<<bicc;
+    }
+    write.close();
+    return loopsleft;
 }
 
 inline const string char2bin(const unsigned char ch)
