@@ -169,8 +169,9 @@ const string BinaryStringRW::writeBinary(const string filepath, const string & b
 }
 
 
-////more efficientive version,lower memory&time cost
+
 /*/
+////more efficientive version,lower memory&time cost
 const string BinaryStringRW::readBinaryS(const string filepath)
 {
 	string binData = "", binBuf = "";
