@@ -1,0 +1,2 @@
+【读取二进制】brw.exe testfiles\ti1.txt testfiles\r1.txt -a
+【恢复二进制】brw.exe testfiles\r1.txt testfiles\r2r.txt -rdt

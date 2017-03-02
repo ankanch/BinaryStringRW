@@ -135,30 +135,22 @@ const int writeBinary(const string filepath,const string & binData)
          cout<<STRING_ERROR_OPEN<<endl;
          return -1;
     }
-    int loops = binData.length()/8;
-    int loopsleft = binData.length()%8;
-    unsigned char bicc;
-    for(int i=0;i<loops;i++){
-        bicc = 0x0;
-        for(int x=0;x<8;x++){
-            if(binData[i*8+x] == '1'){
-                bicc |= CMPARY[x];
-            }
+    unsigned char bicc = 0x0;
+    int svc = 0;
+    for(int i=0;i<binData.length();i++){
+        if(binData[i] == '1'){
+            bicc |= CMPARY[svc];
         }
-        cout<<bicc<<"\t";
-        write<<bicc;
-    } 
-    bicc = 0;
-    for(int i=0;i<loopsleft;i++){
-        if(binData[loops*8+i] == '1'){
-            bicc |= CMPARY[i];
+        svc++;
+        if(svc == 8){
+            svc = 0;
+            write<<bicc;
+            cout<<bicc<<"\t";
+            bicc = 0x0;
         }
-    }
-    if(loopsleft > 0){
-        write<<bicc;
     }
     write.close();
-    return loopsleft;
+    return 0;
 }
 
 inline const string char2bin(const unsigned char ch)
