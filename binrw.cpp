@@ -1,4 +1,3 @@
-#include <iostream>
 #include "binrw.h"
 
 
@@ -82,11 +81,14 @@ const string readBinary(const string filepath ,const int lr,const int rr)
     cout<<"\nprocessing...  ";
     //当设置为读取全部数据的时候
     if(lr == rr && lr == 0){
-        while( !read.eof() ){
+        while( true ){
             read>>noskipws;
             read>>bicc;
             //cout<<bicc<<"\t";
             binData += char2bin(bicc);
+            if( read.tellg() == filelen){
+                break;
+            }
         }
     }else{
         //当设置为读取指定区间的时候
@@ -126,7 +128,6 @@ const string readBinary(const string filepath ,const int lr,const int rr)
         binData = binData.substr(bitsskips,binData.length()-bitsskips);
     }
     cout<<"\tdone\n";
-    
     read.close();
     return binData;
 }
@@ -147,7 +148,7 @@ const int writeBinary(const string filepath,const string & binData)
         if(svc == 8){
             svc = 0;
             write<<bicc;
-            cout<<bicc<<"\t";
+            //cout<<bicc<<"\t";
             bicc = 0x0;
         }
     }

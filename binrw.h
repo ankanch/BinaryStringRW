@@ -1,7 +1,7 @@
+#include <iostream>
 #include <string>
 #include <string.h>
-#include <fstream>
-#include <malloc.h>  
+#include <fstream> 
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,7 +11,7 @@ char MODE_ALL[] = "-a";
 char MODE_RANGE[] = "-r";
 char MODE_REDUCT[] = "-rdt";
 
-string STRING_USAGE = "\n\t\tBinRW by Kanch\nThis algorithm is used to lookup binary data of any file.\n"
+string STRING_USAGE = "\n\t\tBinRW v1.0 by Kanch\nThis algorithm is used to lookup binary data of any file.\n"
                         "---\nUsages:\n\n\tbrw [input-file] [output-file] [mode: -a(all),-r(range)] [l-range] [r-range]\n"
                         "\n\t1. -a means read all the binary data of a file,"
                         "\n\t    in this case, l-range and r-range will be igonred."
