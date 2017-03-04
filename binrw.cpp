@@ -110,7 +110,9 @@ const string readBinary(const string filepath ,const int lr,const int rr)
             return "RANGE ERROR 2";
         }
 
+        pthread_create(&progressthread, NULL, showProgressT, NULL);
         int nread = rr - lr;  //reading range
+        GL_FILEBINLEN = nread;
         int bitsskips = lr%8;
         nread += bitsskips;   //由于会错位，这里采取的策略是多读取要错位的那麽多位，最后再从最终字符串整体右移
         int loops = nread / 8;
@@ -118,6 +120,7 @@ const string readBinary(const string filepath ,const int lr,const int rr)
         read.seekg(lr/8, ios_base::beg);  // move to reading begin pos
         for(int i=0;i<loops;i++){
             read>>bicc;
+            GL_BIN_PROCESSED+=8;
             binData += char2bin(bicc);
         }
         //处理剩余字节
@@ -125,6 +128,7 @@ const string readBinary(const string filepath ,const int lr,const int rr)
         read>>bicc;
         for(int i=loopsleft;i>0;i--){
             //cout<<"\rprocessing...  ";
+            GL_BIN_PROCESSED++;
             if( (bicc & CMPARY[i-1])== CMPARY[i-1] ){
                 binBuf = "1" + binBuf;
             }else{
@@ -138,6 +142,8 @@ const string readBinary(const string filepath ,const int lr,const int rr)
     finished = true;
     return binData;
 }
+
+//该函数仅能够处理以8的倍数的数据。
 const int writeBinary(const string filepath,const string & binData)
 {
     ofstream write(filepath, ios_base::binary | ios_base::out);
@@ -145,6 +151,10 @@ const int writeBinary(const string filepath,const string & binData)
          cout<<STRING_ERROR_OPEN<<endl;
          return -1;
     }
+    cout<<"processing..."<<endl;
+    pthread_t progressthread;
+    pthread_create(&progressthread, NULL, showProgressT, NULL);
+    GL_FILEBINLEN = binData.length();
     unsigned char bicc = 0x0;
     int svc = 0;
     for(int i=0;i<binData.length();i++){
@@ -155,11 +165,13 @@ const int writeBinary(const string filepath,const string & binData)
         if(svc == 8){
             svc = 0;
             write<<bicc;
+            GL_BIN_PROCESSED+=8;
             //cout<<bicc<<"\t";
             bicc = 0x0;
         }
     }
     write.close();
+    finished = true;
     return 0;
 }
 
@@ -189,7 +201,7 @@ void* showProgressT(void* args)
         int pbpos = barWidth * progress;
         int sbpos = barWidth - pbpos;
         cout<<progressbar.substr(0,pbpos)<<spacebar___.substr(0,sbpos);
-        cout.precision(2);
+        cout.precision(3);
         cout << "] " << progress * 100.0<< fixed  << " %     \r";
     }
     cout<<"["<<"======================================================================"<< "] " << " 100%         \r";
