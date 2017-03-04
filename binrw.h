@@ -4,6 +4,7 @@
 #include <fstream> 
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 using namespace std;
 
@@ -33,7 +34,9 @@ string STRING_ERROR_RANGE_FILE = "\n range error!\n r-range exceeds the length o
 unsigned char CMPARY[] = {0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80};
 const int CMPARYLENGTH = 8;
 
+
 //必要函数声明
 inline const string char2bin(const unsigned char ch);
 const string readBinary(const string filepath ,const int lr=0,const int rr=0);
 const int writeBinary(const string filepath,const string & binData);
+void* showProgressT(void* args);

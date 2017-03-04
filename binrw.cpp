@@ -1,6 +1,8 @@
 #include "binrw.h"
 
-
+static unsigned long GL_FILEBINLEN = 0;  //储存总共需要处理的二进制长度，用于用户进度更新线程
+static unsigned long GL_BIN_PROCESSED = 0; //储存当前处理了多少二进制数据，用于用户进度更新线程
+static bool finished = false;   //标记任务是否完成
 
 int main(int argc,char**argv)
 {
@@ -74,16 +76,21 @@ const string readBinary(const string filepath ,const int lr,const int rr)
     }
 	string binData = "";
 	int filelen = read.tellg();
-    int filebinlen = filelen * 8;     
+    unsigned long filebinlen = filelen * 8;
+    GL_FILEBINLEN = filebinlen;
+    unsigned long bitsread = 0;     
 	read.seekg(0, ios_base::beg);
     unsigned char bicc = 0;  // stands for basic container 
+    pthread_t progressthread;
     //开始处理
-    cout<<"\nprocessing...  ";
+    cout<<"\nprocessing...  "<<endl;
     //当设置为读取全部数据的时候
     if(lr == rr && lr == 0){
+        pthread_create(&progressthread, NULL, showProgressT, NULL);
         while( true ){
             read>>noskipws;
             read>>bicc;
+            GL_BIN_PROCESSED += 8;
             //cout<<bicc<<"\t";
             binData += char2bin(bicc);
             if( read.tellg() == filelen){
@@ -127,8 +134,8 @@ const string readBinary(const string filepath ,const int lr,const int rr)
         binData += binBuf;
         binData = binData.substr(bitsskips,binData.length()-bitsskips);
     }
-    cout<<"\tdone\n";
     read.close();
+    finished = true;
     return binData;
 }
 const int writeBinary(const string filepath,const string & binData)
@@ -168,4 +175,23 @@ inline const string char2bin(const unsigned char ch)
             }
     }
     return binBuf;
+}
+
+void* showProgressT(void* args)
+{
+    while(!finished)
+    {
+        double progress = GL_BIN_PROCESSED/double(GL_FILEBINLEN);
+        int barWidth = 70;
+        string progressbar = "======================================================================";
+        string spacebar___ = "                                                                      ";
+        cout << "[";
+        int pbpos = barWidth * progress;
+        int sbpos = barWidth - pbpos;
+        cout<<progressbar.substr(0,pbpos)<<spacebar___.substr(0,sbpos);
+        cout.precision(2);
+        cout << "] " << progress * 100.0<< fixed  << " %     \r";
+    }
+    cout<<"["<<"======================================================================"<< "] " << " 100%         \r";
+    cout<<endl<<"done.\n";
 }
