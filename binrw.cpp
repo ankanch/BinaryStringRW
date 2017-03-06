@@ -13,7 +13,7 @@ int main(int argc,char**argv)
     */
     if(argc == 1){
         cout<<STRING_USAGE<<endl;
-    }else if( argc == 4){
+    }else if( argc == 4 || strcmp(argv[3],MODE_ALL) == 0 || strcmp(argv[3],MODE_REDUCT) == 0){
         //选中为读取整个文件的二进制代码
         if( strcmp(argv[3],MODE_ALL) == 0 ){
             //开始处理
@@ -36,7 +36,7 @@ int main(int argc,char**argv)
             return -1;
         }
 
-    }else if( argc == 6 or argc == 5){
+    }else if( argc == 6 or argc == 5 or strcmp(argv[3],MODE_RANGE) == 0){
         //选中为读取指定区间二进制代码，如果为5个参数，则默认为从 0 到 r-range
         //如果为6个参数，则为 l-range 到 r-range
         if( strcmp(argv[3],MODE_RANGE) != 0 ){

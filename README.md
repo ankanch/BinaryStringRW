@@ -37,6 +37,14 @@ this is a test by Kanch.
 
 **注意：如果在-r模式先仅给出一个值（l-range或者r-range），程序将会从文件起始位置读取到给定值位置。
 
+# 编译本代码
+
+请使用以下命令编译：
+
+```
+g++ -o brw -static -static-libgcc -static-libstdc++ binrw.cpp
+```
+
 # 其它
 
 您可以在GPL协议下自由修改本代码。
