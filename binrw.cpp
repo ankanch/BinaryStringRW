@@ -13,11 +13,14 @@ int main(int argc,char**argv)
     */
     if(argc == 1){
         cout<<STRING_USAGE<<endl;
-    }else if( argc == 4 || strcmp(argv[3],MODE_ALL) == 0 || strcmp(argv[3],MODE_REDUCT) == 0){
+    }else if( argc == 4 || strcmp(argv[3],MODE_ALL) == 0 || strcmp(argv[3],MODE_REDUCT) == 0  || strcmp(argv[3],MODE_HEX) == 0){
         //选中为读取整个文件的二进制代码
-        if( strcmp(argv[3],MODE_ALL) == 0 ){
+        if( strcmp(argv[3],MODE_ALL) == 0 || strcmp(argv[3],MODE_HEX) == 0){
             //开始处理
             string result = readBinary(argv[1]);
+            if(strcmp(argv[3],MODE_HEX) == 0){
+                result = convert2Hex(result);
+            }
             if(strcmp(argv[2],"-") == 0){
                 cout<<"---\nresult:\n"<<result<<endl;
             }else{
@@ -206,4 +209,31 @@ void* showProgressT(void* args)
     }
     cout<<"["<<"======================================================================"<< "] " << " 100%         \r";
     cout<<endl<<"done.\n";
+}
+
+const string convert2Hex(const string & binData){
+    string result = "";
+    int loops = binData.length()/4;
+    int bitsleft = binData.length()%4;
+    string hexbit = "";
+    for(int i=0;i<loops;i++){
+        hexbit = binData.substr(i*4,4);
+        for(int j=0;j<16;j++){
+            if(HEXCODE[j] == hexbit){
+                result+=HEXARY[j];
+                break;
+            }
+        }
+    }
+    hexbit = binData.substr(loops*4,bitsleft);
+    for(int i=0;hexbit.length()<4;i++){
+        hexbit = "0" + hexbit;
+    }
+    for(int j=0;j<16;j++){
+            if(HEXCODE[j] == hexbit){
+                result+=HEXARY[j];
+                break;
+            }
+    }
+    return result;
 }
