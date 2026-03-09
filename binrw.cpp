@@ -87,17 +87,19 @@ const string readBinary(const string filepath ,const int lr,const int rr)
     pthread_t progressthread;
     //开始处理
     cout<<"\nprocessing...  "<<endl;
+    size_t binDataOffset = 0;
     //当设置为读取全部数据的时候
     if(lr == rr && lr == 0){
+        binData.resize(filebinlen);
         pthread_create(&progressthread, NULL, showProgressT, NULL);
-        while( true ){
-            read>>noskipws;
-            read>>bicc;
-            GL_BIN_PROCESSED += 8;
-            //cout<<bicc<<"\t";
-            binData += char2bin(bicc);
-            if( read.tellg() == filelen){
-                break;
+        const size_t BUFFER_SIZE = 8192;
+        char buffer[BUFFER_SIZE];
+        while (read.read(buffer, BUFFER_SIZE) || read.gcount() > 0) {
+            size_t count = read.gcount();
+            for (size_t i = 0; i < count; ++i) {
+                bicc = static_cast<unsigned char>(buffer[i]);
+                GL_BIN_PROCESSED += 8;
+                char2bin_inline(bicc, binData, binDataOffset);
             }
         }
     }else{
@@ -120,29 +122,54 @@ const string readBinary(const string filepath ,const int lr,const int rr)
         nread += bitsskips;   //由于会错位，这里采取的策略是多读取要错位的那麽多位，最后再从最终字符串整体右移
         int loops = nread / 8;
         int loopsleft = nread % 8;
+
+        string rawDataStr = "";
+        rawDataStr.resize(nread);
+        size_t rawOffset = 0;
+
+        pthread_create(&progressthread, NULL, showProgressT, NULL);
+
         read.seekg(lr/8, ios_base::beg);  // move to reading begin pos
-        for(int i=0;i<loops;i++){
-            read>>bicc;
-            GL_BIN_PROCESSED+=8;
-            binData += char2bin(bicc);
+        const size_t BUFFER_SIZE = 8192;
+        char buffer[BUFFER_SIZE];
+        int remaining_loops = loops;
+
+        while (remaining_loops > 0) {
+            size_t to_read = (remaining_loops * 8 > BUFFER_SIZE * 8) ? BUFFER_SIZE : remaining_loops;
+            read.read(buffer, to_read);
+            size_t count = read.gcount();
+            if (count == 0) break;
+
+            for (size_t i = 0; i < count; ++i) {
+                bicc = static_cast<unsigned char>(buffer[i]);
+                GL_BIN_PROCESSED+=8;
+                char2bin_inline(bicc, rawDataStr, rawOffset);
+            }
+            remaining_loops -= count;
         }
+
         //处理剩余字节
-        string binBuf = "";
-        read>>bicc;
-        for(int i=loopsleft;i>0;i--){
-            //cout<<"\rprocessing...  ";
-            GL_BIN_PROCESSED++;
-            if( (bicc & CMPARY[i-1])== CMPARY[i-1] ){
-                binBuf = "1" + binBuf;
-            }else{
-                binBuf = "0" + binBuf;
+        if (loopsleft > 0) {
+            string binBuf = "";
+            read>>bicc;
+            for(int i=loopsleft;i>0;i--){
+                GL_BIN_PROCESSED++;
+                if( (bicc & CMPARY[i-1])== CMPARY[i-1] ){
+                    binBuf = "1" + binBuf;
+                }else{
+                    binBuf = "0" + binBuf;
+                }
+            }
+            for (size_t i = 0; i < binBuf.length(); ++i) {
+                rawDataStr[rawOffset++] = binBuf[i];
             }
         }
-        binData += binBuf;
-        binData = binData.substr(bitsskips,binData.length()-bitsskips);
+
+        binData = rawDataStr.substr(bitsskips, rawDataStr.length()-bitsskips);
     }
     read.close();
     finished = true;
+    pthread_join(progressthread, NULL);
     return binData;
 }
 
@@ -158,50 +185,67 @@ const int writeBinary(const string filepath,const string & binData)
     pthread_t progressthread;
     pthread_create(&progressthread, NULL, showProgressT, NULL);
     GL_FILEBINLEN = binData.length();
+
+    const size_t BUFFER_SIZE = 8192;
+    char buffer[BUFFER_SIZE];
+    size_t buf_index = 0;
+
     unsigned char bicc = 0x0;
     int svc = 0;
-    for(int i=0;i<binData.length();i++){
+    for(size_t i=0;i<binData.length();i++){
         if(binData[i] == '1'){
             bicc |= CMPARY[svc];
         }
         svc++;
         if(svc == 8){
             svc = 0;
-            write<<bicc;
+            buffer[buf_index++] = static_cast<char>(bicc);
             GL_BIN_PROCESSED+=8;
-            //cout<<bicc<<"\t";
             bicc = 0x0;
+
+            if (buf_index >= BUFFER_SIZE) {
+                write.write(buffer, BUFFER_SIZE);
+                buf_index = 0;
+            }
         }
     }
+
+    if (buf_index > 0) {
+        write.write(buffer, buf_index);
+    }
+
     write.close();
     finished = true;
+    pthread_join(progressthread, NULL);
     return 0;
 }
 
-inline const string char2bin(const unsigned char ch)
+inline void char2bin_inline(const unsigned char ch, string& binData, size_t& offset)
 {
-    string binBuf = "";
     for(int i=0;i<CMPARYLENGTH;i++){
-            //cout<<"\rprocessing...  ";
-            if( (ch & CMPARY[i])== CMPARY[i] ){
-                binBuf += "1";
-            }else{
-                binBuf += "0";
-            }
+        if( (ch & CMPARY[i])== CMPARY[i] ){
+            binData[offset++] = '1';
+        }else{
+            binData[offset++] = '0';
+        }
     }
-    return binBuf;
 }
 
 void* showProgressT(void* args)
 {
     while(!finished)
     {
-        double progress = GL_BIN_PROCESSED/double(GL_FILEBINLEN);
+        double progress = 0.0;
+        if (GL_FILEBINLEN > 0) {
+            progress = GL_BIN_PROCESSED/double(GL_FILEBINLEN);
+        }
         int barWidth = 70;
         string progressbar = "======================================================================";
         string spacebar___ = "                                                                      ";
         cout << "[";
         int pbpos = barWidth * progress;
+        if (pbpos > barWidth) pbpos = barWidth;
+        if (pbpos < 0) pbpos = 0;
         int sbpos = barWidth - pbpos;
         cout<<progressbar.substr(0,pbpos)<<spacebar___.substr(0,sbpos);
         cout.precision(3);
@@ -209,31 +253,37 @@ void* showProgressT(void* args)
     }
     cout<<"["<<"======================================================================"<< "] " << " 100%         \r";
     cout<<endl<<"done.\n";
+    return NULL;
 }
 
 const string convert2Hex(const string & binData){
-    string result = "";
     int loops = binData.length()/4;
     int bitsleft = binData.length()%4;
-    string hexbit = "";
+    string result = "";
+    result.resize(loops + (bitsleft > 0 ? 1 : 0));
+    size_t res_index = 0;
+
     for(int i=0;i<loops;i++){
-        hexbit = binData.substr(i*4,4);
+        string hexbit = binData.substr(i*4,4);
         for(int j=0;j<16;j++){
             if(HEXCODE[j] == hexbit){
-                result+=HEXARY[j];
+                result[res_index++] = HEXARY[j];
                 break;
             }
         }
     }
-    hexbit = binData.substr(loops*4,bitsleft);
-    for(int i=0;hexbit.length()<4;i++){
-        hexbit = "0" + hexbit;
-    }
-    for(int j=0;j<16;j++){
-            if(HEXCODE[j] == hexbit){
-                result+=HEXARY[j];
-                break;
-            }
+
+    if (bitsleft > 0) {
+        string hexbit = binData.substr(loops*4,bitsleft);
+        for(int i=0;hexbit.length()<4;i++){
+            hexbit = "0" + hexbit;
+        }
+        for(int j=0;j<16;j++){
+                if(HEXCODE[j] == hexbit){
+                    result[res_index++] = HEXARY[j];
+                    break;
+                }
+        }
     }
     return result;
 }
