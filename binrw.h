@@ -42,7 +42,7 @@ const int CMPARYLENGTH = 8;
 
 
 //必要函数声明
-inline const string char2bin(const unsigned char ch);
+inline void char2bin_inline(const unsigned char ch, string& binData, size_t& offset);
 const string readBinary(const string filepath ,const int lr=0,const int rr=0);
 const int writeBinary(const string filepath,const string & binData);
 void* showProgressT(void* args);
